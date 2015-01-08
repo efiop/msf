@@ -1,0 +1,149 @@
+msf(8)
+======
+
+NAME
+----
+msf - a trivial framework for simplified Makefile rules
+
+SYNOPSIS
+--------
+'make' -f main.mk makefile=Makefile obj=<dir>
+
+OVERVIEW
+--------
+*mfs* is a bunch of helper functions to minimize hand work while
+work with Makefiles. It is implied (but not required) that source
+code is organized as a tree of directories such as +src/+, +include/+
+and etc, where on toplevel a root 'Makefile' placed which is
+responsible for linking of a final program only.
+
+*msf* is autogenerating rules for building dependency files, preprocessed
+files, assembly files and finally object files themself. Thus the only
+duty for a regular building is to plug in *msf* into a project and
+write a rule for final program linking.
+
+USAGE
+-----
+At first *mfs* needs to know where its own scripts are living
+thus one should export a path to *mfs* via traditional shell
+environment (note the ending slash is required).
+
+----------
+	export __msf_dir=/path/to/scripts/
+----------
+
+Another option is exporting it isnide toplevel 'Makefile' itself
+in the same way.
+
+Once exported we can start using *mfs* simply including it into
+toplevel 'Makefile'.
+
+----------
+	include $(__msf_dir)include.mk
+----------
+
+Further usage is better to describe in example. Lets assume
+we have a project with the following structure
+
+----------
+ example
+ |
+ +-- Makefile           # toplevel makefile
+ |
+ +-- src/
+ |      Makefile        # directory makefile
+ |      src-1.c
+ |      src-2.c
+ |
+ +-- include/
+        src-1.h
+        src-2.h
+----------
+
+In toplevel Makefile we type
+
+----------
+        include $(__msf_dir)include.mk
+        MAKEFLAGS := -r -R --no-print-directory
+        build := -r -R -f $(__msf_dir)main.mk makefile=Makefile obj
+        PROGRAM := example
+----------
+
+This plugs in *mfs* itself via 'include' directive and provides
+'build' shorthand we will use later in rules itselves. 'MAKEFLAGS'
+here simply to tune up make engine and might be omitted. 'PROGRAM'
+here is a name of final executable to be linked.
+
+Then we tell *mfs* to autogenerate rules for compilation and
+linking of a final program.
+
+----------
+	$(eval $(call gen-build-exec,src,$(PROGRAM)))
+	all: $(PROGRAM)
+		@true
+----------
+
+Finally lets add 'clean' target which allows us to clean up
+all generated files with 'make clean' call.
+
+----------
+clean:
+	$(call msg-clean, $(PROGRAM))
+	$(Q) $(RM) $(PROGRAM)
+	$(Q) $(MAKE) $(build)=src $@
+----------
+
+Now once 'toplevel makefile' is ready lets tell *mfs* which files
+are to be compiled and linked, type the following into 'directory makefile'
+
+----------
+	obj-y += src-1.o
+	obj-y += src-2.o
+----------
+
+And that is all. For trivial projects it is enough. *msf* will generate
+all rules needed automatically from 'obj-y' variables. Here are complete
+listings for both makefiles.
+
+Toplevel Makefile
+~~~~~~~~~~~~~~~~~
+----------
+	include $(__msf_dir)include.mk
+
+	MAKEFLAGS := -r -R --no-print-directory
+	build := -r -R -f $(__msf_dir)main.mk makefile=Makefile obj
+
+	PROGRAM := example
+
+	$(eval $(call gen-build-exec,src,$(PROGRAM)))
+
+	clean:
+		$(call msg-clean, $(PROGRAM))
+		$(Q) $(RM) $(PROGRAM)
+		$(Q) $(MAKE) $(build)=src $@
+
+	all: $(PROGRAM)
+		@true
+
+	.DEFAULT_GOAL	:= all
+----------
+
+Directory Makefile
+~~~~~~~~~~~~~~~~~~
+----------
+	obj-y += src-1.o
+	obj-y += src-2.o
+----------
+
+HELPERS AND VARIABLES
+---------------------
+Because *mfs* is written in makefile language it reserves all names
+prefixed with *\_\_msf_*, please do not use them in your projects.
+
+*NOTE*: The manual is still incomplete will be filled with time.
+
+RESERVED KEYWORDS
+-----------------
+
+The following _variables_ are reserved for internal use:
+*_objs*, *_deps*, *_cleanups*, *_target*, *built-in.o*.
