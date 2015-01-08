@@ -30,10 +30,10 @@ define gen-rule-c-bundle
         $(eval $(call gen-rule-i-from-c-by-name,$(1),$(2),$(3)))
         $(eval $(call gen-rule-d-from-c-by-name,$(1),$(2),$(3)))
         $(eval $(call gen-rule-s-from-c-by-name,$(1),$(2),$(3)))
-        _cleanups += $(1).o
-        _cleanups += $(1).i
-        _cleanups += $(1).d
-        _cleanups += $(1).s
+        _cleanups += $(2).o
+        _cleanups += $(2).i
+        _cleanups += $(2).d
+        _cleanups += $(2).s
 endef
 
 #
@@ -45,9 +45,9 @@ define gen-rule-S-bundle
         $(eval $(call gen-rule-o-from-S-by-name,$(1),$(2),$(3)))
         $(eval $(call gen-rule-d-from-S-by-name,$(1),$(2),$(3)))
         $(eval $(call gen-rule-i-from-S-by-name,$(1),$(2),$(3)))
-        _cleanups += $(1).o
-        _cleanups += $(1).d
-        _cleanups += $(1).i
+        _cleanups += $(2).o
+        _cleanups += $(2).d
+        _cleanups += $(2).i
 endef
 
 #
