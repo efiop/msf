@@ -13,6 +13,8 @@ ifneq ($(obj),)
                 include $(obj)/$(makefile)
                 #
                 # Include predefined if requested
+		# (note no $(obj)/ here it must be
+		# prepared by the caller.
                 _deps += $(dep-y)
                 _cleanups += $(cleanup-y)
         endif
