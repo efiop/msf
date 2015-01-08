@@ -10,3 +10,5 @@ MAKEFLAGS := -r -R --no-print-directory
 all:
 	$(call msg-gen, simple)
 	$(Q) $(MAKE) -C simple
+	$(call msg-gen, mult)
+	$(Q) $(MAKE) -C mult
