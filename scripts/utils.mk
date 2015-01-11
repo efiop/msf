@@ -7,5 +7,9 @@ try-cc := $(shell sh -c                                                         
                  rm -f "$$TMP"')
 
 #
+# Remove duplicates
+uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
+
+#
 # Footer
 ____msf_defined__utils := y
