@@ -214,7 +214,7 @@ all: $(_targets)
 #
 # Clean everything needed
 .PHONY: clean
-_cleanups += $(_objs) $(_deps)
+_cleanups := $(call uniq, $(_cleanups) $(_objs) $(_deps))
 clean:
 	$(call msg-clean, $(obj))
 	$(Q) $(RM) $(_cleanups)
