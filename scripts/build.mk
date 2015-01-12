@@ -111,8 +111,8 @@ ifneq ($(asm-e),)
 endif
 
 ifneq ($(_objs),)
-        _targets += $(obj)/built-in.o
-        _cleanups += $(obj)/built-in.o
+        _targets += $(addprefix $(obj)/,built-in.o)
+        _cleanups += $(addprefix $(obj)/,built-in.o)
 endif
 
 #
@@ -138,8 +138,8 @@ define gen-target-rule
                                 $($(1)-asm-e),,                                                 \
                                 _$(1)-objs,_$(1)-deps))
         endif
-        _targets += $(obj)/$(1).built-in.o
-        _cleanups += $(obj)/$(1).built-in.o
+        _targets += $(addprefix $(obj)/,$(1).built-in.o)
+        _cleanups += $(addprefix $(obj)/,$(1).built-in.o)
 endef
 
 $(foreach t, $(targets),                                                                        \
@@ -194,14 +194,14 @@ endef
 #
 # Default built-in
 ifneq ($(_objs),)
-$(eval $(call gen-link-rule,$(obj)/built-in.o,$(_objs),_cleanups))
+$(eval $(call gen-link-rule,$(addprefix $(obj)/,built-in.o),$(_objs),_cleanups))
 endif
 
 #
 # Per-target built-in
 $(foreach t, $(targets),                                        \
         $(eval $(call gen-link-rule,                            \
-                        $(obj)/$(t).built-in.o,                 \
+                        $(addprefix $(obj)/,$(t).built-in.o),   \
                         $(_$(t)-objs) $(_objs),                 \
                         _cleanups)))
 
