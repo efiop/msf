@@ -177,30 +177,23 @@ endif
 # $(1) - target name
 # $(2) - object files
 # $(3) - cleanup accumulator
-define gen-link-rule
-ifneq ($(filter %.o,$(1)),)
+define gen-link-ld-rule
 $(1): $(2)
 	$$(call msg-link, $$@)
 	$$(Q) $$(LD) $$(LDFLAGS) $$(ldflags-y) -r -o $$@ $$^
-endif
-ifneq ($(filter %.so,$(1)),)
-$(1): $(2)
-	$$(call msg-link, $$@)
-	$$(Q) $$(CC) -shared $$(cflags-so) $$(ldflags-so) $$(LDFLAGS) -o $$@ $$^
-endif
 $(3) += $(1)
 endef
 
 #
 # Default built-in
 ifneq ($(_objs),)
-        $(eval $(call gen-link-rule,$(addprefix $(obj)/,built-in.o),$(_objs),_cleanups))
+        $(eval $(call gen-link-ld-rule,$(addprefix $(obj)/,built-in.o),$(_objs),_cleanups))
 endif
 
 #
 # Per-target built-in
 $(foreach t, $(targets),                                        \
-        $(eval $(call gen-link-rule,                            \
+        $(eval $(call gen-link-ld-rule,                         \
                         $(addprefix $(obj)/,$(t).built-in.o),   \
                         $(_$(t)-objs) $(_objs),                 \
                         _cleanups)))
