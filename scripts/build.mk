@@ -10,7 +10,7 @@ _targets        :=
 
 ifneq ($(obj),)
         ifneq ($(makefile),)
-                include $(obj)/$(makefile)
+                include $(addprefix $(obj)/,$(makefile))
                 #
                 # Include predefined if requested
 		# (note no $(obj)/ here it must be
@@ -148,7 +148,7 @@ $(foreach t, $(targets),                                                        
 #
 # Include deps when needed
 define include-dep
-        ifeq ($(1),$(obj)/built-in.o)
+        ifeq ($(1),$(addprefix $(obj)/,built-in.o))
                 $(eval -include $(_deps))
         else
                 ifneq ($(filter-out %.d, $(1)),)
