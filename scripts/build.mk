@@ -146,6 +146,11 @@ $(foreach t, $(targets),                                                        
         $(eval $(call gen-target-rule,$(t))))
 
 #
+# Same for library if requested
+$(foreach t, $(libs),                                                                        \
+        $(eval $(call gen-target-rule,$(lib))))
+
+#
 # Include deps when needed
 define include-dep
         ifeq ($(1),$(addprefix $(obj)/,built-in.o))
@@ -207,6 +212,14 @@ endif
 $(foreach t, $(targets),                                        \
         $(eval $(call gen-link-ld-rule,                         \
                         $(addprefix $(obj)/,$(t).built-in.o),   \
+                        $(_$(t)-objs) $(_objs),                 \
+                        _cleanups)))
+
+#
+# Per-library built-in
+$(foreach t, $(libs),                                           \
+        $(eval $(call gen-link-so-rule,                         \
+                        $(addprefix $(obj)/,$(t).so),           \
                         $(_$(t)-objs) $(_objs),                 \
                         _cleanups)))
 
