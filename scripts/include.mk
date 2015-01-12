@@ -45,14 +45,22 @@ $(1)/built-in.o: $(1)
 endef
 
 #
+# Shorthand for simple linkage
+# $(1) - directory name
+# $(2) - executable name
+define gen-build-link
+$(2): $(1)/built-in.o
+	$$(call msg-link, $$@)
+	$$(Q) $$(CC) $$(CFLAGS) $$^ $$(LIBS) $$(LDFLAGS) -o $$@
+endef
+
+#
 # Shorthand for simple linked programs
 # $(1) - directory name
 # $(2) - executable name
 define gen-build-exec
 $$(eval $$(call gen-build-dir,$(1)))
-$(2): $(1)/built-in.o
-	$$(call msg-link, $$@)
-	$$(Q) $$(CC) $$(CFLAGS) $$^ $$(LIBS) $$(LDFLAGS) -o $$@
+$$(eval $$(call gen-build-link,$(1),$(2)))
 endef
 
 #
