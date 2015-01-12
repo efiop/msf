@@ -64,6 +64,16 @@ $$(eval $$(call gen-build-link,$(1),$(2)))
 endef
 
 #
+# Shorthand for library linkage
+# $(1) - directory name
+# $(2) - library name
+define gen-build-so-link
+$(2): $(1)/built-in.o
+	$$(call msg-link, $$@)
+	$$(Q) $$(CC) -shared $$(cflags-so) $$(ldflags-so) $$(LDFLAGS) -o $$@ $$^
+endef
+
+#
 # If not defined yet -- fetch it out
 ARCH ?= $(shell uname -m | sed          \
                 -e s/i.86/i386/         \
