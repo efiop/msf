@@ -194,7 +194,7 @@ endef
 #
 # Default built-in
 ifneq ($(_objs),)
-$(eval $(call gen-link-rule,$(addprefix $(obj)/,built-in.o),$(_objs),_cleanups))
+        $(eval $(call gen-link-rule,$(addprefix $(obj)/,built-in.o),$(_objs),_cleanups))
 endif
 
 #
