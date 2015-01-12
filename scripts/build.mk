@@ -185,6 +185,18 @@ $(3) += $(1)
 endef
 
 #
+# Link a target
+# $(1) - target name
+# $(2) - object files
+# $(3) - cleanup accumulator
+define gen-link-so-rule
+$(1): $(2)
+        $$(call msg-link, $$@)
+        $$(Q) $$(CC) -shared $$(cflags-so) $$(ldflags-so) $$(LDFLAGS) -o $$@ $$^
+$(3) += $(1)
+endef
+
+#
 # Default built-in
 ifneq ($(_objs),)
         $(eval $(call gen-link-ld-rule,$(addprefix $(obj)/,built-in.o),$(_objs),_cleanups))
