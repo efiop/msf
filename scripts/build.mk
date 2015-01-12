@@ -146,11 +146,6 @@ $(foreach t, $(targets),                                                        
         $(eval $(call gen-target-rule,$(t))))
 
 #
-# Same for library if requested
-$(foreach t, $(libs),                                                                        \
-        $(eval $(call gen-target-rule,$(lib))))
-
-#
 # Include deps when needed
 define include-dep
         ifeq ($(1),$(addprefix $(obj)/,built-in.o))
@@ -190,18 +185,6 @@ $(3) += $(1)
 endef
 
 #
-# Link a target
-# $(1) - target name
-# $(2) - object files
-# $(3) - cleanup accumulator
-define gen-link-so-rule
-$(1): $(2)
-        $$(call msg-link, $$@)
-        $$(Q) $$(CC) -shared $$(cflags-so) $$(ldflags-so) $$(LDFLAGS) -o $$@ $$^
-$(3) += $(1)
-endef
-
-#
 # Default built-in
 ifneq ($(_objs),)
         $(eval $(call gen-link-ld-rule,$(addprefix $(obj)/,built-in.o),$(_objs),_cleanups))
@@ -212,15 +195,7 @@ endif
 $(foreach t, $(targets),                                        \
         $(eval $(call gen-link-ld-rule,                         \
                         $(addprefix $(obj)/,$(t).built-in.o),   \
-                        $(_$(t)-objs) $(_objs),                 \
-                        _cleanups)))
-
-#
-# Per-library built-in
-$(foreach t, $(libs),                                           \
-        $(eval $(call gen-link-so-rule,                         \
-                        $(addprefix $(obj)/,$(t).so),           \
-                        $(_$(t)-objs) $(_objs),                 \
+                        $(_$(t)-objs),                          \
                         _cleanups)))
 
 #
