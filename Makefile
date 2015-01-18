@@ -21,12 +21,19 @@ docs:
 
 install:
 	@echo 'Copying scripts into $(dir)'
+	@cp scripts/build.mk $(dir)
+	@cp scripts/include.mk $(dir)
+	@cp scripts/macro.mk $(dir)
+	@cp scripts/main.mk $(dir)
+	@cp scripts/rules.mk $(dir)
+	@cp scripts/tools.mk $(dir)
+	@cp scripts/utils.mk $(dir)
 
 all:
 	@true
 
 clean:
-	$(call msg-clean, "src")
+	$(call msg-clean, "msf")
 	$(Q) $(MAKE) -C Documentation clean
 
 .DEFAULT_GOAL := all
